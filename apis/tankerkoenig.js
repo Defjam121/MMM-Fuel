@@ -8,12 +8,6 @@
  */
 
 /**
- * Earth radius in meter.
- * @type {number}
- */
-const earth = 6371e3;
-
-/**
  * @external node-fetch
  * @see https://www.npmjs.com/package/node-fetch
  */
@@ -105,7 +99,8 @@ function deg2rad(degrees)
 */
 function getDistance(pos1,pos2) {
     // Algorithm taken from https://stackoverflow.com/a/27943
-    /* eslint-disable no-mixed-operators */
+    const earth = 6371e3;
+
     const dLat = deg2rad(pos2.lat - pos1.lat);
     const dLon = deg2rad(pos2.lng - pos1.lng);
     const distance = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
