@@ -14,6 +14,7 @@
 const fetch = require('node-fetch');
 
 const BASE_URL = 'https://creativecommons.tankerkoenig.de/json/list.php';
+const BASE_URL_DETAIL = 'https://creativecommons.tankerkoenig.de/json/detail.php';
 
 let config;
 
@@ -26,6 +27,16 @@ let config;
 function generateUrl() {
     return `${BASE_URL}?lat=${config.lat}&lng=${config.lng}&rad=${config.radius}&type=all&apikey=${
         config.api_key}&sort=dist`;
+}
+
+/**
+ * @function generateUrlDetail
+ * @description Helper function to generate API request url.
+ *
+ * @returns {string} url
+ */
+function generateUrlDetail(id) {
+    return `${BASE_URL_DETAIL}?id=${id}&apikey=${config.api_key}`;
 }
 
 /**
@@ -56,6 +67,24 @@ function sortByPrice(a, b) {
  * @returns {boolean} To keep or filter the station.
  */
 function filterStations(station) {
+    for (let i = 0; i < config.types.length; i += 1) {
+        if (station[config.types[i]] <= 0 || config.showOpenOnly && !station.isOpen) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * @function checkStations
+ * @description Helper function to filter gas stations.
+ *
+ * @param {Object} station - Gas Station
+ *
+ * @returns {boolean} To keep or filter the station.
+ */
+function checkStation(station) {
     for (let i = 0; i < config.types.length; i += 1) {
         if (station[config.types[i]] <= 0 || config.showOpenOnly && !station.isOpen) {
             return false;
@@ -100,15 +129,35 @@ function normalizeStations(value, index, stations) {
  * @see apis
  */
 async function getData() {
-    const response = await fetch(generateUrl());
-    const parsedResponse = await response.json();
+    let stations;
 
+    if (config.onlyStations.length < 1) {
+        const response = await fetch(generateUrl());
+        const parsedResponse = await response.json();
 
-    if (!parsedResponse.ok) {
-        throw new Error('Error no fuel data');
+        if (!parsedResponse.ok) {
+            throw new Error('Error no fuel data');
+        }
+
+        stations = parsedResponse.stations.filter(filterStations);
+
+    } else {
+
+        stations = [];
+
+        for(let i = 0;i < config.onlyStations.length;i++) {
+            const response = await fetch(generateUrlDetail(config.onlyStations[i]));
+            const parsedResponse = await response.json();
+
+            if (!parsedResponse.ok) {
+                throw new Error('Error no fuel data or station id not found');
+            }
+
+            if (checkStation(parsedResponse.station)) {
+                stations.push(parsedResponse.station);
+            }
+        }
     }
-
-    const stations = parsedResponse.stations.filter(filterStations);
 
     stations.forEach(normalizeStations);
 
