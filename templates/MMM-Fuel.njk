@@ -27,7 +27,9 @@
                 {% endif %}
             {% endfor %}
             <th class="centered">
-                <i class="fa fa-map-o"></i>
+                {% if config.onlyStations.length < 1 %}
+                    <i class="fa fa-map-o"></i>
+                {% endif %}
                 {% if not sortByPrice %}
                     <i class="fa fa-long-arrow-down sortBy"></i>
                 {% endif %}
@@ -44,7 +46,9 @@
                         <td class="centered">{{ gasStation.prices[type] | formatPrice }}</td>
                     {% endif %}
                 {% endfor %}
-                <td class="centered">{{ gasStation.distance }} {{ priceList.unit }}</td>
+                {% if gasStation.distance %}
+                    <td class="centered">{{ gasStation.distance }} {{ priceList.unit }}</td>
+                {% endif %}
                 {% if config.open %}
                     <td class="centered">
                         <i class="fa fa-{{ "unlock" if gasStation.isOpen else "lock" }}"></i>
