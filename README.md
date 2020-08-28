@@ -72,6 +72,7 @@ or your API access will be suspended.
 | `api_key` | REQUIRED | Get an API key for free access to the data of [tankerkoenig.de](https://creativecommons.tankerkoenig.de/#register). |
 | `types` | `["diesel"]` | Valid options are `diesel`, `e5` and `e10`. |
 | `radius` | `5` | Valid range is 1-25. |
+| `onlyStations` | `[ ]` | Search for the gas station IDs via the [finderTool](https://creativecommons.tankerkoenig.de/TankstellenFinder/index.html). Drag the blue marker on the map to the rough location of desired gas stations. Select the gas stations and click "Tankstellen übernehmen" on the right. This will download a file holding the location IDs. For example: `"a7cdd9cf-b467-4aac-8eab-d662f082511e"`. Option supports multiple ID's, separated by comma (",").
 
 ### spritpreisrechner (Austria only)
 
