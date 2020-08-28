@@ -8,6 +8,12 @@
  */
 
 /**
+ * Earth radius in meter.
+ * @type {number}
+ */
+const earth = 6371e3;
+
+/**
  * @external node-fetch
  * @see https://www.npmjs.com/package/node-fetch
  */
@@ -74,6 +80,39 @@ function filterStations(station) {
     }
 
     return true;
+}
+
+/**
+* @function degrees_to_radians
+* @description Calculates the radians.
+*
+* @param  {number} - Degrees
+* @returns {number} - Return radians
+*/
+function deg2rad(degrees)
+{
+  var pi = Math.PI;
+  return degrees * (pi/180);
+}
+
+/**
+* @function getDistance
+* @description Calculates the distance between two points.
+*
+* @param {Object.<number, number>} - Start point
+* @param {Object.<number, number>} - Target point
+* @returns {number} - Distance in kilometers
+*/
+function getDistance(pos1,pos2) {
+    // Algorithm taken from https://stackoverflow.com/a/27943
+    /* eslint-disable no-mixed-operators */
+    const dLat = deg2rad(pos2.lat - pos1.lat);
+    const dLon = deg2rad(pos2.lng - pos1.lng);
+    const distance = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(pos1.lat)) * Math.cos(deg2rad(pos2.lat)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(distance), Math.sqrt(1 - distance));
+    return earth * c / 1000;
 }
 
 /**
@@ -154,7 +193,9 @@ async function getData() {
             }
 
             if (checkStation(parsedResponse.station)) {
-                stations.push(parsedResponse.station);
+                let station = parsedResponse.station;
+                station["dist"]= getDistance(station,{"lat":config.lat,"lng":config.lng}).toFixed(1);
+                stations.push(station);
             }
         }
     }
