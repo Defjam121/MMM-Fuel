@@ -72,6 +72,7 @@ Module.register('MMM-Fuel', {
      * @property {int} updateInterval - Speed of update.
      * @property {string} provider - API provider of the data.
      * @property {boolean} toFixed - Flag to show price with only 2 decimals.
+     * @property {string[]} onlyStations - Id's of gas stations to display
      */
     defaults: {
         radius: 5,
@@ -92,7 +93,10 @@ Module.register('MMM-Fuel', {
         rotateInterval: 60 * 1000, // every minute
         updateInterval: 15 * 60 * 1000, // every 15 minutes
         provider: 'tankerkoenig',
-        toFixed: false
+        toFixed: false,
+        onlyStations: [
+            
+        ]
     },
 
     /**
@@ -178,7 +182,6 @@ Module.register('MMM-Fuel', {
      */
     start() {
         Log.info(`Starting module: ${this.name}`);
-
         if (!this.config.types.includes(this.config.sortBy)) {
             Log.error('Config option sortBy has no matching value in config option types! Falling back to first entry.');
             this.config.sortBy = this.config.types[0];
