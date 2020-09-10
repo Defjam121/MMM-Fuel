@@ -1,5 +1,11 @@
 # MMM-Fuel Changelog
 
+## [2.1.2]
+
+### Added
+
+* A option to show only stations with the id in onlyStations.
+
 ## [2.1.1]
 
 ### Fixed
