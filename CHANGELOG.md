@@ -4,7 +4,7 @@
 
 ### Added
 
-* A option to show only stations with the id in onlyStations.
+* A option to show only stations with the id in `onlyStations`.
 
 ## [2.1.1]
 
